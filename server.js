@@ -74,10 +74,6 @@ app.get('/api/all', showAllUrls);
 app.get('/api/shorturl/:shorturl', redirectToFullUrl);
 
 // listen for requests :)
-var listener = app.listen(
-  process.env.PORT,
-  // 8080,
-  function () {
-    console.log('Your app is listening on port ' + listener.address().port);
-  }
-);
+var listener = app.listen(process.env.PORT || 8080, () => {
+  console.log('Your app is listening on port ' + listener.address().port);
+});
