@@ -67,11 +67,10 @@ const redirectToFullUrl = (req, res) => {
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/build/index.html');
 });
+
 app.post('/api/shorturl/new', createAndSaveUrl);
 app.get('/api/remove', removeAllPersons);
 app.get('/api/all', showAllUrls);
 app.get('/api/shorturl/:shorturl', redirectToFullUrl);
 
-app.listen(process.env.PORT, function () {
-  console.log(`Listening on port ${process.env.PORT}`);
-});
+app.listen(process.env.PORT || 8080, () => console.log('Server is running...'));
