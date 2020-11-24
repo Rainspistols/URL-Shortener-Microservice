@@ -8,6 +8,7 @@ const validUrl = require('valid-url');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(__dirname + '/build'));
+app.use(cors());
 
 mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true });
 
@@ -19,8 +20,6 @@ const ShortUrlSchema = new Schema({
 });
 
 const ShortUrl = mongoose.model('shorturl', ShortUrlSchema);
-
-app.use(cors());
 
 const createAndSaveUrl = (req, res) => {
   ShortUrl.estimatedDocumentCount().exec((err, count) => {
@@ -73,7 +72,9 @@ app.get('/api/remove', removeAllPersons);
 app.get('/api/all', showAllUrls);
 app.get('/api/shorturl/:shorturl', redirectToFullUrl);
 
+const PORT = process.env.PORT || '8080';
+
 // listen for requests :)
-var listener = app.listen(process.env.PORT || 8080, () => {
+var listener = app.listen(PORT, () => {
   console.log('Your app is listening on port ' + listener.address().port);
 });
