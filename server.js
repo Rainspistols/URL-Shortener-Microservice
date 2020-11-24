@@ -73,4 +73,11 @@ app.get('/api/remove', removeAllPersons);
 app.get('/api/all', showAllUrls);
 app.get('/api/shorturl/:shorturl', redirectToFullUrl);
 
-app.listen(process.env.PORT, () => console.log('Server is running...'));
+// listen for requests :)
+var listener = app.listen(
+  process.env.PORT,
+  // 8080,
+  function () {
+    console.log('Your app is listening on port ' + listener.address().port);
+  }
+);
