@@ -22,19 +22,23 @@ const ShortUrlSchema = new Schema({
 const ShortUrl = mongoose.model('shorturl', ShortUrlSchema);
 
 const createAndSaveUrl = (req, res) => {
-  ShortUrl.estimatedDocumentCount().exec((err, count) => {
-    const newShortUrl = new ShortUrl({
-      original_url: req.body.url,
-      short_url: count + 1,
+  if (validUrl.isUri(req.body.url)) {
+    ShortUrl.estimatedDocumentCount().exec((err, count) => {
+      const newShortUrl = new ShortUrl({
+        original_url: req.body.url,
+        short_url: count + 1,
+      });
+      
+      newShortUrl.save((err, newUrl) => {
+        if (err) return res.send(err);
+        return res
+          .status(200)
+          .json({ original_url: newUrl.original_url, short_url: newUrl.short_url });
+      });
     });
-
-    newShortUrl.save((err, newUrl) => {
-      if (err) return res.send(err);
-      return res
-        .status(200)
-        .json({ original_url: newUrl.original_url, short_url: newUrl.short_url });
-    });
-  });
+  } else {
+    res.json({ error: 'invalid url' });
+  }
 };
 
 const removeAllPersons = (req, res) => {
@@ -54,12 +58,7 @@ const showAllUrls = (req, res) => {
 const redirectToFullUrl = (req, res) => {
   ShortUrl.findOne({ short_url: req.params.shorturl }).exec((err, url) => {
     if (err) return res.send(err);
-
-    if (validUrl.isUri(url.original_url)) {
-      res.redirect(url.original_url);
-    } else {
-      res.json({ error: 'invalid url' });
-    }
+    res.redirect(url.original_url);
   });
 };
 
