@@ -8,7 +8,7 @@ const validUrl = require('valid-url');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(__dirname + '/build'));
-app.use(cors());
+app.use(cors({ optionsSuccessStatus: 200 }));
 
 mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true });
 
