@@ -7,6 +7,7 @@ const bodyParser = require('body-parser');
 const validUrl = require('valid-url');
 
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.static(__dirname + '/build'));
 
 mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true });
 
@@ -63,6 +64,9 @@ const redirectToFullUrl = (req, res) => {
   });
 };
 
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/build/index.html');
+});
 app.post('/api/shorturl/new', createAndSaveUrl);
 app.get('/api/remove', removeAllPersons);
 app.get('/api/all', showAllUrls);
