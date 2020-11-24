@@ -73,4 +73,4 @@ app.get('/api/remove', removeAllPersons);
 app.get('/api/all', showAllUrls);
 app.get('/api/shorturl/:shorturl', redirectToFullUrl);
 
-app.listen(process.env.PORT || 8080, () => console.log('Server is running...'));
+app.listen(process.env.PORT, () => console.log('Server is running...'));
