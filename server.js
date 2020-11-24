@@ -24,7 +24,7 @@ const ShortUrl = mongoose.model('shorturl', ShortUrlSchema);
 const createAndSaveUrl = (req, res) => {
   ShortUrl.estimatedDocumentCount().exec((err, count) => {
     const newShortUrl = new ShortUrl({
-      original_url: req.body.URL,
+      original_url: req.body.url,
       short_url: count + 1,
     });
 
