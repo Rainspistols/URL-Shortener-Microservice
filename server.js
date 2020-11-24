@@ -19,8 +19,6 @@ const ShortUrlSchema = new Schema({
 
 const ShortUrl = mongoose.model('shorturl', ShortUrlSchema);
 
-const port = process.env.PORT;
-
 app.use(cors());
 
 const createAndSaveUrl = (req, res) => {
@@ -70,6 +68,6 @@ app.get('/api/remove', removeAllPersons);
 app.get('/api/all', showAllUrls);
 app.get('/api/shorturl/:shorturl', redirectToFullUrl);
 
-app.listen(port, function () {
-  console.log(`Listening on port ${port}`);
+app.listen(process.env.PORT, function () {
+  console.log(`Listening on port ${process.env.PORT}`);
 });
