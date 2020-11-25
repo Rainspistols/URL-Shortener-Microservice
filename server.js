@@ -39,9 +39,7 @@ const createAndSaveUrl = (req, res) => {
 
         newShortUrl.save((err, newUrl) => {
           if (err) return res.send(err);
-          return res
-            .status(200)
-            .json({ original_url: newUrl.original_url, short_url: newUrl.short_url });
+          return res.json({ original_url: newUrl.original_url, short_url: newUrl.short_url });
         });
       });
     }
@@ -51,14 +49,14 @@ const createAndSaveUrl = (req, res) => {
 const removeAllPersons = (req, res) => {
   ShortUrl.deleteMany({}, (err, allRemoved) => {
     if (err) return res.send(err);
-    return res.status(200).json(allRemoved);
+    return res.json(allRemoved);
   });
 };
 
 const showAllUrls = (req, res) => {
   ShortUrl.estimatedDocumentCount().exec((err, count) => {
     if (err) return res.send(err);
-    return res.status(200).json({ count: count });
+    return res.json({ count: count });
   });
 };
 
