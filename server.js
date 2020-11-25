@@ -5,7 +5,7 @@ const app = express();
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const dns = require('dns');
-import urlExists from 'url-exists-deep';
+const urlExists = require('url-exists-deep');
 
 const PORT = process.env.PORT || '8080';
 
