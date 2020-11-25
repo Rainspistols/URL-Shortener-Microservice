@@ -24,13 +24,13 @@ const ShortUrlSchema = new Schema({
 
 const ShortUrl = mongoose.model('shorturl', ShortUrlSchema);
 
-const REPLACE_REGEX = /^https?:\/\//i;
+const REPLACE_REGEX = /^https?:\/\//;
 const createAndSaveUrl = (req, res) => {
   const urlWithoutHttp = req.body.url.replace(REPLACE_REGEX, '');
 
   dns.lookup(urlWithoutHttp, function doListen(err) {
     if (err) {
-      res.json({ error: 'invalid url', err: err });
+      res.json({ error: 'invalid url', err: err, urlWithoutHttp: urlWithoutHttp });
     } else {
       ShortUrl.estimatedDocumentCount().exec((err, count) => {
         const newShortUrl = new ShortUrl({
