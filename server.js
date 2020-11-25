@@ -47,7 +47,7 @@ const createAndSaveUrl = (req, res) => {
   //   }
   // });
 
-  urlExists(req.body.url)
+  urlExist(urlWithoutHttp)
     .then(() => {
       ShortUrl.estimatedDocumentCount().exec((err, count) => {
         const newShortUrl = new ShortUrl({
@@ -62,7 +62,7 @@ const createAndSaveUrl = (req, res) => {
       });
     })
     .catch((err) => {
-      res.json({ error: 'invalid url', err: err, urlWithoutHttp: urlWithoutHttp });
+      return res.json({ error: 'invalid url', err: err, urlWithoutHttp: urlWithoutHttp });
     });
 };
 
