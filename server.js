@@ -47,7 +47,7 @@ const createAndSaveUrl = (req, res) => {
   //   }
   // });
 
-  urlExists(urlWithoutHttp)
+  urlExists(req.body.url)
     .then(() => {
       ShortUrl.estimatedDocumentCount().exec((err, count) => {
         const newShortUrl = new ShortUrl({
