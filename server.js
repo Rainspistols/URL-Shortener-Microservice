@@ -4,7 +4,7 @@ const cors = require('cors');
 const app = express();
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const validUrl = require('valid-url');
+const dns = require('dns');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(__dirname + '/build'));
@@ -22,23 +22,27 @@ const ShortUrlSchema = new Schema({
 const ShortUrl = mongoose.model('shorturl', ShortUrlSchema);
 
 const createAndSaveUrl = (req, res) => {
-  if (validUrl.isUri(req.body.url)) {
-    ShortUrl.estimatedDocumentCount().exec((err, count) => {
-      const newShortUrl = new ShortUrl({
-        original_url: req.body.url,
-        short_url: count + 1,
+  const REPLACE_REGEX = /^https?:\/\//i;
+  const urlWithoutHttp = req.body.url.replace(REPLACE_REGEX, '');
+  dns.lookup(urlWithoutHttp, (err) => {
+    if (err == null) {
+      ShortUrl.estimatedDocumentCount().exec((err, count) => {
+        const newShortUrl = new ShortUrl({
+          original_url: req.body.url,
+          short_url: count + 1,
+        });
+
+        newShortUrl.save((err, newUrl) => {
+          if (err) return res.send(err);
+          return res
+            .status(200)
+            .json({ original_url: newUrl.original_url, short_url: newUrl.short_url });
+        });
       });
-      
-      newShortUrl.save((err, newUrl) => {
-        if (err) return res.send(err);
-        return res
-          .status(200)
-          .json({ original_url: newUrl.original_url, short_url: newUrl.short_url });
-      });
-    });
-  } else {
-    res.json({ error: 'invalid url' });
-  }
+    } else {
+      res.json({ error: 'invalid url' });
+    }
+  });
 };
 
 const removeAllPersons = (req, res) => {
