@@ -28,7 +28,7 @@ const REPLACE_REGEX = /^https?:\/\//i;
 const createAndSaveUrl = (req, res) => {
   const urlWithoutHttp = req.body.url.replace(REPLACE_REGEX, '');
 
-  dns.lookup(urlWithoutHttp, (err) => {
+  dns.lookup(urlWithoutHttp, function doListen(err) {
     if (err) {
       res.json({ error: 'invalid url', err: err });
     } else {
