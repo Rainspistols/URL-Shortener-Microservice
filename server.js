@@ -5,7 +5,7 @@ const app = express();
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const dns = require('dns');
-const urlExists = require('url-exists-deep');
+const urlExists = require('url-exist');
 
 const PORT = process.env.PORT || '8080';
 
@@ -47,8 +47,9 @@ const createAndSaveUrl = (req, res) => {
   //   }
   // });
 
-  urlExists(req.body.url)
-    .then(() => {
+  (async () => {
+    const exists = await urlExists(req.body.url);
+    if (exists) {
       ShortUrl.estimatedDocumentCount().exec((err, count) => {
         const newShortUrl = new ShortUrl({
           original_url: req.body.url,
@@ -60,10 +61,27 @@ const createAndSaveUrl = (req, res) => {
           return res.json({ original_url: newUrl.original_url, short_url: newUrl.short_url });
         });
       });
-    })
-    .catch((err) => {
-      return res.json({ error: 'invalid url', err: err, urlWithoutHttp: urlWithoutHttp });
-    });
+    } else {
+      res.json({ error: 'invalid url', urlWithoutHttp: urlWithoutHttp });
+    }
+  })();
+
+  // .then(() => {
+  //   ShortUrl.estimatedDocumentCount().exec((err, count) => {
+  //     const newShortUrl = new ShortUrl({
+  //       original_url: req.body.url,
+  //       short_url: count + 1,
+  //     });
+
+  //     newShortUrl.save((err, newUrl) => {
+  //       if (err) return res.send(err);
+  //       return res.json({ original_url: newUrl.original_url, short_url: newUrl.short_url });
+  //     });
+  //   });
+  // })
+  // .catch((err) => {
+  //   return res.json({ error: 'invalid url', err: err, urlWithoutHttp: urlWithoutHttp });
+  // });
 };
 
 const removeAllPersons = (req, res) => {
