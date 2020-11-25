@@ -4,7 +4,6 @@ const cors = require('cors');
 const app = express();
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const dns = require('dns');
 const urlExists = require('url-exist');
 
 const PORT = process.env.PORT || '8080';
@@ -25,28 +24,7 @@ const ShortUrlSchema = new Schema({
 
 const ShortUrl = mongoose.model('shorturl', ShortUrlSchema);
 
-const REPLACE_REGEX = /^https?:\/\//;
 const createAndSaveUrl = (req, res) => {
-  const urlWithoutHttp = req.body.url.replace(REPLACE_REGEX, '');
-
-  // dns.lookup(urlWithoutHttp, function doListen(err) {
-  //   if (err) {
-  //     res.json({ error: 'invalid url', err: err, urlWithoutHttp: urlWithoutHttp });
-  //   } else {
-  //     ShortUrl.estimatedDocumentCount().exec((err, count) => {
-  //       const newShortUrl = new ShortUrl({
-  //         original_url: req.body.url,
-  //         short_url: count + 1,
-  //       });
-
-  //       newShortUrl.save((err, newUrl) => {
-  //         if (err) return res.send(err);
-  //         return res.json({ original_url: newUrl.original_url, short_url: newUrl.short_url });
-  //       });
-  //     });
-  //   }
-  // });
-
   (async () => {
     const exists = await urlExists(req.body.url);
     if (exists) {
@@ -62,26 +40,9 @@ const createAndSaveUrl = (req, res) => {
         });
       });
     } else {
-      res.json({ error: 'invalid url', urlWithoutHttp: urlWithoutHttp });
+      res.json({ error: 'invalid url' });
     }
   })();
-
-  // .then(() => {
-  //   ShortUrl.estimatedDocumentCount().exec((err, count) => {
-  //     const newShortUrl = new ShortUrl({
-  //       original_url: req.body.url,
-  //       short_url: count + 1,
-  //     });
-
-  //     newShortUrl.save((err, newUrl) => {
-  //       if (err) return res.send(err);
-  //       return res.json({ original_url: newUrl.original_url, short_url: newUrl.short_url });
-  //     });
-  //   });
-  // })
-  // .catch((err) => {
-  //   return res.json({ error: 'invalid url', err: err, urlWithoutHttp: urlWithoutHttp });
-  // });
 };
 
 const removeAllPersons = (req, res) => {
