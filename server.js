@@ -6,6 +6,8 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const dns = require('dns');
 
+const PORT = process.env.PORT || '8080';
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(__dirname + '/build'));
 app.use(cors({ optionsSuccessStatus: 200 }));
@@ -21,11 +23,14 @@ const ShortUrlSchema = new Schema({
 
 const ShortUrl = mongoose.model('shorturl', ShortUrlSchema);
 
+const REPLACE_REGEX = /^https?:\/\//i;
 const createAndSaveUrl = (req, res) => {
-  const REPLACE_REGEX = /^https?:\/\//i;
   const urlWithoutHttp = req.body.url.replace(REPLACE_REGEX, '');
+
   dns.lookup(urlWithoutHttp, (err) => {
-    if (err == null) {
+    if (err) {
+      res.json({ error: 'invalid url' });
+    } else {
       ShortUrl.estimatedDocumentCount().exec((err, count) => {
         const newShortUrl = new ShortUrl({
           original_url: req.body.url,
@@ -39,8 +44,6 @@ const createAndSaveUrl = (req, res) => {
             .json({ original_url: newUrl.original_url, short_url: newUrl.short_url });
         });
       });
-    } else {
-      res.json({ error: 'invalid url' });
     }
   });
 };
@@ -74,8 +77,6 @@ app.post('/api/shorturl/new', createAndSaveUrl);
 app.get('/api/remove', removeAllPersons);
 app.get('/api/all', showAllUrls);
 app.get('/api/shorturl/:shorturl', redirectToFullUrl);
-
-const PORT = process.env.PORT || '8080';
 
 // listen for requests :)
 var listener = app.listen(PORT, () => {
