@@ -30,7 +30,7 @@ const createAndSaveUrl = (req, res) => {
 
   dns.lookup(urlWithoutHttp, (err) => {
     if (err) {
-      res.json({ error: 'invalid url' });
+      res.json({ error: 'invalid url', err: err });
     } else {
       ShortUrl.estimatedDocumentCount().exec((err, count) => {
         const newShortUrl = new ShortUrl({
