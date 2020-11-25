@@ -9,6 +9,7 @@ const dns = require('dns');
 const PORT = process.env.PORT || '8080';
 
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 app.use(express.static(__dirname + '/build'));
 app.use(cors({ optionsSuccessStatus: 200 }));
 
@@ -38,8 +39,8 @@ const createAndSaveUrl = (req, res) => {
         });
 
         newShortUrl.save((err, newUrl) => {
-          if (err) return res.send(err);
-          return res.json({ original_url: newUrl.original_url, short_url: newUrl.short_url });
+          if (err) res.send(err);
+          res.json({ original_url: newUrl.original_url, short_url: newUrl.short_url });
         });
       });
     }
