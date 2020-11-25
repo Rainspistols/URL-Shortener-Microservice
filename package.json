@@ -17,6 +17,7 @@
     "mongoose": "^5.10.15",
     "node": "^15.2.1",
     "url-exist": "^2.0.2",
+    "url-exists-deep": "^2.0.10",
     "valid-url": "^1.0.9"
   },
   "engines": {

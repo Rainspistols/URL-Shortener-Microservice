@@ -5,7 +5,7 @@ const app = express();
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const dns = require('dns');
-const urlExist = require('url-exist');
+import urlExists from 'url-exists-deep';
 
 const PORT = process.env.PORT || '8080';
 
@@ -47,7 +47,7 @@ const createAndSaveUrl = (req, res) => {
   //   }
   // });
 
-  urlExist(urlWithoutHttp)
+  urlExists(req.body.url)
     .then(() => {
       ShortUrl.estimatedDocumentCount().exec((err, count) => {
         const newShortUrl = new ShortUrl({
